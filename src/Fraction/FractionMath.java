@@ -1,6 +1,5 @@
 package Fraction;
 
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class FractionMath {
