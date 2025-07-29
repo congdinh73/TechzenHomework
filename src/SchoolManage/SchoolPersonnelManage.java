@@ -109,7 +109,7 @@ public class SchoolPersonnelManage {
             String fullName = scanner.nextLine();
             boolean found = false;
             for (SchoolPersonnel personnel : schoolPersonnelList) {
-                if (personnel.getFullName().equalsIgnoreCase(fullName)) {
+                if (personnel.getFullName().toLowerCase().contains(fullName.toLowerCase())) {
                     personnel.showInfo();
                     found = true;
                     break;
