@@ -1,8 +1,12 @@
 package ss5_polymorphism.employee_manager;
 
+import ss5_polymorphism.employee_manager.Utils.SortUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+import static ss5_polymorphism.employee_manager.Utils.SortUtils.sortByFor;
 
 
 public class Main {
@@ -55,6 +59,7 @@ public class Main {
 
 
     static Scanner sc = new Scanner(System.in);
+    static SortUtils sortByFor;
 
 //    static ArrayList<ManagementEmployee> managementEmployees = new ArrayList<>();
 //    static ArrayList<ProductionEmployee> productionEmployees = new ArrayList<>();
@@ -164,7 +169,7 @@ public class Main {
 
         if (managementEmployees.isEmpty()) return "QL001";
 
-        int max = Integer.parseInt(managementEmployees.getFirst().getId().substring(2));
+        int max = Integer.parseInt(managementEmployees.get(0).getId().substring(2));
 
         for (ManagementEmployee managementEmployee : managementEmployees) {
             int id = Integer.parseInt(managementEmployee.getId().substring(2));
@@ -181,7 +186,7 @@ public class Main {
 
         if (productionEmployees.isEmpty()) return "SX001";
 
-        int max = Integer.parseInt(productionEmployees.getFirst().getId().substring(2));
+        int max = Integer.parseInt(productionEmployees.get(0).getId().substring(2));
 
         for (ProductionEmployee productionEmployee : productionEmployees) {
             int id = Integer.parseInt(productionEmployee.getId().substring(2));
@@ -197,9 +202,8 @@ public class Main {
         System.out.println("===== Màn Hình 2 =====\nCẬP NHẬT THÔNG TIN NHÂN VIÊN");
         System.out.println("Nhập vào ID muốn cập nhật thông tin");
         String id = sc.nextLine();
-
+        boolean isExistEmployee = false;
         if (id.startsWith("QL")) {
-            boolean isExistEmployee = false;
             for (Employee employee : employees) {
                 if (employee instanceof ManagementEmployee && employee.getId().equals(id)) {
                     isExistEmployee = true;
@@ -214,13 +218,24 @@ public class Main {
             }
         } else if (id.startsWith("SX")) {
             // logic cập nhật thông tin cho nhân viên sản xuất
-        } else {
-            System.out.println("ID không hợp lệ!");
+            for (Employee employee : employees) {
+                if (employee instanceof ProductionEmployee && employee.getId().equals(id)) {
+                    isExistEmployee = true;
+                    employee.input();
+                    System.out.println("Cập nhật thành công");
+                    break;
+                }
+            }
+
+            if (!isExistEmployee) {
+                System.out.println("Không tìm thấy ID muốn cập nhật!");
+            }
         }
     }
 
     private static void menuShowList() {
         int choose;
+        int count = 1;
         while (true) {
             do {
                 System.out.println("===== Màn Hình 3 =====\nDANH SÁCH NHÂN VIÊN");
@@ -234,7 +249,6 @@ public class Main {
 
                 switch (choose) {
                     case 1:
-                        int count = 1;
                         for (Employee employee : employees) {
                             if (employee instanceof ManagementEmployee) {
                                 System.out.println("Thông tin nhân viên thứ " + count++);
@@ -244,6 +258,12 @@ public class Main {
                         break;
                     case 2:
                         // logic show danh sách nhân viên sản xuất
+                        for (Employee employee : employees) {
+                            if (employee instanceof ProductionEmployee) {
+                                System.out.println("Thông tin nhân viên sản xuất thứ " + count++);
+                                employee.output();
+                            }
+                        }
                         break;
                     case 3:
                         for (int i = 0; i < employees.size(); i++) {
@@ -276,9 +296,11 @@ public class Main {
                 switch (choose) {
                     case 1:
                         // logic sắp xếp theo lương cho nhân viên quản lý
+                        sortManagementEmployeesSalary();
                         break;
                     case 2:
                         // logic sắp xếp theo lương cho nhân viên sản xuất
+                        sortProductionEmployeesSalary();
                         break;
                     case 3:
                         sortAllEmployees();
@@ -319,22 +341,61 @@ public class Main {
         }
     }
 
-    private static void sortByFor(List<Employee> list, boolean ascending) {
-        for (int i = 0; i < list.size() - 1; i++) {
-            for (int j = i + 1; j < list.size(); j++) {
-                double salaryI = list.get(i).getSalary();
-                double salaryJ = list.get(j).getSalary();
-
-                boolean needSwap = ascending
-                        ? salaryI > salaryJ
-                        : salaryI < salaryJ;
-
-                if (needSwap) {
-                    Employee temp = list.get(i);
-                    list.set(i, list.get(j));
-                    list.set(j, temp);
-                }
+    private static void sortManagementEmployeesSalary() {
+        List<Employee> managementEmployees = new ArrayList<>();
+        System.out.println("1. Tăng dần theo lương");
+        System.out.println("2. Giảm dần theo lương");
+        System.out.print("Chọn cách sắp xếp: ");
+        int choose = Integer.parseInt(sc.nextLine());
+        for (Employee employee : employees) {
+            if (employee instanceof ManagementEmployee) {
+                managementEmployees.add(employee);
             }
         }
+
+        if (choose == 1) {
+            sortByFor(managementEmployees, true);
+        } else {
+            sortByFor(managementEmployees, false);
+        }
+        System.out.println("----- Danh sách nhân viên quản lý sau khi sắp xếp theo lương -----");
+        int count = 1;
+        for (Employee employee : managementEmployees) {
+            System.out.println("Thông tin nhân viên thứ " + count++);
+            employee.output();
+            System.out.println("Lương: " + employee.getSalary());
+            System.out.println();
+        }
+    }
+
+    private static void sortProductionEmployeesSalary() {
+        List<Employee> productionEmployees = new ArrayList<>();
+        System.out.println("1. Tăng dần theo lương");
+        System.out.println("2. Giảm dần theo lương");
+        System.out.print("Chọn cách sắp xếp: ");
+        int choose = Integer.parseInt(sc.nextLine());
+        for (Employee employee : employees) {
+            if (employee instanceof ProductionEmployee) {
+                productionEmployees.add(employee);
+            }
+        }
+
+        if (choose == 1) {
+            sortByFor(productionEmployees, true);
+        } else {
+            sortByFor(productionEmployees, false);
+        }
+        System.out.println("----- Danh sách nhân viên sản xuất sau khi sắp xếp theo lương -----");
+        int count = 1;
+        for (Employee employee : productionEmployees) {
+            System.out.println("Thông tin nhân viên thứ " + count++);
+            employee.output();
+            System.out.println("Lương: " + employee.getSalary());
+            System.out.println();
+        }
+
     }
 }
+
+
+
