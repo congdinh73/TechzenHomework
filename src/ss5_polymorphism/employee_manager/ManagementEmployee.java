@@ -56,4 +56,5 @@ public class ManagementEmployee extends Employee {
     public void setCoefficientSalary(double coefficientSalary) {
         this.coefficientSalary = coefficientSalary;
     }
+
 }
