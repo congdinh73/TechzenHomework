@@ -1,4 +1,4 @@
-package PhoneManage;
+package PhoneManage.utils;
 
 public class IdGenerator {
     private static int newPhoneCount = 0;
