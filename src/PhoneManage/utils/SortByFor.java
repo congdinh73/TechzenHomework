@@ -1,6 +1,6 @@
-package PhoneManage;
+package PhoneManage.utils;
 
-import PhoneManage.Model.Phone;
+import PhoneManage.model.Phone;
 
 import java.util.List;
 
