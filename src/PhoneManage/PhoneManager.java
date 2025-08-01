@@ -1,13 +1,15 @@
 package PhoneManage;
 
-import PhoneManage.Model.NewPhone;
-import PhoneManage.Model.OldPhone;
-import PhoneManage.Model.Phone;
+import PhoneManage.model.NewPhone;
+import PhoneManage.model.OldPhone;
+import PhoneManage.model.Phone;
+import PhoneManage.utils.CheckInput;
+import PhoneManage.utils.SortByFor;
 
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class PhoneManage {
+public class PhoneManager {
     static Scanner scanner = new Scanner(System.in);
     static ArrayList<Phone> phones = new ArrayList<>();
 
@@ -27,6 +29,7 @@ public class PhoneManage {
                 System.out.println("9. Exit");
                 System.out.print("Enter your choice: ");
                 choice = Integer.parseInt(scanner.nextLine());
+                String id;
 
                 switch (choice) {
                     case 1:
@@ -36,14 +39,24 @@ public class PhoneManage {
                         menuAddPhone();
                         break;
                     case 3:
-                        System.out.print("Enter Phone ID to update: ");
-                        String id = scanner.nextLine();
-                        updatePhoneInformation(id);
+                        System.out.println("Enter Phone ID to update: ");
+                        id = CheckInput.readString();
+                        Phone phone = findById(id);
+                        if (phone != null) {
+                            updatePhoneInformation(id);
+                        } else {
+                            System.out.println("No phone found with the ID: " + id + ". Please try again.");
+                        }
                         break;
                     case 4:
-                        System.out.print("Enter Phone ID to delete: ");
-                        String deleteId = scanner.nextLine();
-                        deletePhone(deleteId);
+                        System.out.println("Enter Phone ID to delete: ");
+                        id = CheckInput.readString();
+                        Phone phoneToDelete = findById(id);
+                        if (phoneToDelete != null) {
+                            deletePhone(id);
+                        } else {
+                            System.out.println("No phone found with the ID: " + id + ". Please try again.");
+                        }
                         break;
                     case 5:
                         menuSortPhoneByPrice();
@@ -69,6 +82,7 @@ public class PhoneManage {
     }
 
     private static void menuDisplayPhone() {
+        int count = 1;
         int choice;
         do {
             while (true) {
@@ -92,16 +106,20 @@ public class PhoneManage {
                         System.out.println("Displaying old phones");
                         for (Phone oldPhone : phones) {
                             if (oldPhone instanceof OldPhone) {
+                                System.out.println("Information of old Phone " + count++ + ":");
                                 oldPhone.output();
                             }
                         }
+                        break;
                     case 3:
                         System.out.println("Displaying new phones");
                         for (Phone newPhone : phones) {
                             if (newPhone instanceof NewPhone) {
+                                System.out.println("Information of new Phone " + count++ + ":");
                                 newPhone.output();
                             }
                         }
+                        break;
                     case 4:
                         return;
                     default:
@@ -127,12 +145,16 @@ public class PhoneManage {
                         System.out.println("Adding new Phone");
                         NewPhone newPhone = new NewPhone();
                         newPhone.input();
+                        phones.add(newPhone);
                         System.out.println("New Phone added successfully!");
+                        break;
                     case 2:
                         System.out.println("Adding old Phone");
                         OldPhone oldPhone = new OldPhone();
                         oldPhone.input();
+                        phones.add(oldPhone);
                         System.out.println("Old Phone added successfully!");
+                        break;
                     case 3:
                         return;
                     default:
@@ -157,17 +179,21 @@ public class PhoneManage {
                     case 1:
                         System.out.println("Sorting by price ascending");
                         sortByPrice(true);
-                        for (Phone phone : phones) {
-                            System.out.println("Listing phones after sorting:");
-                            phone.output();
+                        for (int i = 0; i < phones.size(); i++) {
+                            System.out.println("---Listing phones after sorting---");
+                            System.out.println("Information of Phone " + (i + 1) + ":");
+                            phones.get(i).output();
                         }
+                        break;
                     case 2:
                         System.out.println("Sorting by price descending");
                         sortByPrice(false);
-                        for (Phone phone : phones) {
-                            System.out.println("Listing phones after sorting:");
-                            phone.output();
+                        for (int i = 0; i < phones.size(); i++) {
+                            System.out.println("---Listing phones after sorting---");
+                            System.out.println("Information of Phone " + (i + 1) + ":");
+                            phones.get(i).output();
                         }
+                        break;
                     case 3:
                         return;
                     default:
@@ -193,19 +219,19 @@ public class PhoneManage {
                     case 1:
                         System.out.println("Searching by Phone name");
                         System.out.print("Enter the price to search: ");
-                        double price = Double.parseDouble(scanner.nextLine());
+                        double price = CheckInput.readPositiveInteger();
                         findPhoneByPrice(price);
                         break;
                     case 2:
                         System.out.println("Searching by Phone name");
                         System.out.print("Enter the Phone name to search: ");
-                        String name = scanner.nextLine();
+                        String name = CheckInput.readString();
                         findPhoneByName(name);
                         break;
                     case 3:
                         System.out.println("Searching by Phone brand");
                         System.out.print("Enter the Phone brand to search: ");
-                        String brand = scanner.nextLine();
+                        String brand = CheckInput.readString();
                         findPhoneByBrand(brand);
                         break;
                     case 4:
@@ -218,6 +244,10 @@ public class PhoneManage {
     }
 
     private static void sortByPrice(boolean ascending) {
+        if (phones.isEmpty()) {
+            System.out.println("No phones available to sort.");
+            return;
+        }
         SortByFor.sortByFor(phones, ascending);
     }
 
@@ -239,7 +269,7 @@ public class PhoneManage {
         for (Phone phone : phones) {
             if (phone.getPhoneName().toLowerCase().contains(name.toLowerCase())) {
                 phone.output();
-                return;
+                isFound = true;
             }
         }
         if (!isFound) {
@@ -252,7 +282,7 @@ public class PhoneManage {
         for (Phone phone : phones) {
             if (phone.getBrand().toLowerCase().contains(brand.toLowerCase())) {
                 phone.output();
-                return;
+                isFound = true;
             }
         }
         if (!isFound) {
@@ -260,48 +290,48 @@ public class PhoneManage {
         }
     }
 
-    private static void updatePhoneInformation(String id) {
-        boolean isFound = false;
+    private static Phone findById(String id) {
         if (id == null || id.length() != 6 || !(id.startsWith("DTC") || id.startsWith("DTM"))) {
             System.out.println("Invalid ID format. ID must be 6 characters long and start with 'DTC' or 'DTM'.");
-            return;
+            return null;
         }
+
         for (Phone phone : phones) {
-            if (phone.getId().toLowerCase().contains(id.toLowerCase())) {
-                System.out.println("Updating information for Phone with ID: " + id);
-                phone.input();
-                System.out.println("Phone information updated successfully!");
-                return;
+            if (phone.getId().equalsIgnoreCase(id)) {
+                return phone;
             }
         }
-        if (!isFound) {
+        return null;
+    }
+
+    private static void updatePhoneInformation(String id) {
+        Phone phone = findById(id);
+        if (phone == null) {
             System.out.println("No phone found with the ID: " + id);
+            return;
         }
+
+        System.out.println("Current information of the Phone:");
+        phone.output();
+        System.out.println("Enter new information for the Phone:");
+        phone.input();
+        System.out.println("Phone information updated successfully!");
     }
 
     private static void deletePhone(String id) {
-        boolean isFound = false;
-        if (id == null || id.length() != 6 || !(id.startsWith("DTC") || id.startsWith("DTM"))) {
-            System.out.println("Invalid ID format. ID must be 6 characters long and start with 'DTC' or 'DTM'.");
+        Phone phone = findById(id);
+        if (phone == null) {
+            System.out.println("No phone found with the ID: " + id);
             return;
         }
-        for (Phone phone : phones) {
-            if (phone.getId().toLowerCase().contains(id.toLowerCase())) {
-                System.out.println("You are about to delete the Phone with ID: " + id);
-                System.out.print("Are you sure you want to delete this Phone? (yes/no): ");
-                String confirm = String.valueOf(scanner.nextLine()).toLowerCase();
-                if (!confirm.equals("yes")) {
-                    System.out.println("Deletion cancelled.");
-                    return;
-                }
-                phones.remove(phone);
-                System.out.println("Phone with ID: " + id + " has been deleted successfully!");
-                isFound = true;
-                break;
-            }
-        }
-        if (!isFound) {
-            System.out.println("No phone found with the ID: " + id);
+
+        System.out.println("Are you sure you want to delete the Phone with ID: " + id + "? (YES/NO)");
+        String confirmation = CheckInput.readString();
+        if (confirmation.equalsIgnoreCase("yes")) {
+            phones.remove(phone);
+            System.out.println("Phone with ID: " + id + " has been deleted successfully!");
+        } else {
+            System.out.println("Deletion cancelled.");
         }
     }
 
@@ -314,19 +344,29 @@ public class PhoneManage {
     }
 
     private static void discountForOldPhones() {
-        System.out.print("Enter discount percentage for old phones: ");
-        double discountPercent = Double.parseDouble(scanner.nextLine());
-        if (discountPercent < 0 || discountPercent > 100) {
-            System.out.println("Invalid discount percentage! Please enter a value between 0 and 100.");
-            return;
+        double discountPercent;
+        while (true) {
+            System.out.print("Enter a valid discount percentage (0-100): ");
+            discountPercent = CheckInput.readPositiveInteger();
+            if (discountPercent >= 0 && discountPercent <= 100) {
+                break;
+            } else {
+                System.out.println("Invalid percentage! Please enter a number between 0 and 100.");
+            }
         }
+
+        int count = 0;
         for (Phone phone : phones) {
             if (phone instanceof OldPhone) {
                 ((OldPhone) phone).promote(discountPercent);
-                System.out.println("Discount applied to old phone with ID: " + phone.getId());
-            } else {
-                System.out.println("No old phones found to apply discount.");
+                count++;
             }
+        }
+
+        if (count == 0) {
+            System.out.println("No old phones available for discount.");
+        } else {
+            System.out.printf("Successfully discounted %d old phone(s) by %.1f%%.\n", count, discountPercent);
         }
     }
 }
