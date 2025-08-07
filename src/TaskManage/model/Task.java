@@ -1,4 +1,4 @@
-package TaskMange.model;
+package TaskManage.model;
 
 public class Task {
     private String name;
@@ -22,6 +22,6 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{name='" + name + "', priority=" + priority + "}";
+        return "[Task] Name: " + name + ", Priority: " + priority;
     }
 }

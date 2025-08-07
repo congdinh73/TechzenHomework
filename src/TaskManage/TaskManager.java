@@ -1,6 +1,6 @@
-package TaskMange;
+package TaskManage;
 
-import TaskMange.model.Task;
+import TaskManage.model.Task;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -60,11 +60,11 @@ public class TaskManager <T>{
     }
 
     public T findHighestPriorityTask() {
-        if (queue.isEmpty()) {
+        if (isQueueEmpty()) {
             return null;
         }
         T highest = null;
-        int highestPriority = 0;
+        int highestPriority = Integer.MAX_VALUE;
 
         for (T task : queue) {
             int currentPriority = ((Task) task).getPriority();
