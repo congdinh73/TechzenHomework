@@ -1,6 +1,8 @@
 package PhoneManage.model;
 
-public abstract class Phone {
+import PhoneManage.service.Promotion;
+
+public abstract class Phone implements Comparable<Phone> {
 
     public String id;
     public String phoneName;
@@ -80,5 +82,10 @@ public abstract class Phone {
                 ", Time of Maintenance: " + timeMaintenance +
                 ", OS: " + OS +
                 ", Brand: " + brand);
+    }
+
+    @Override
+    public int compareTo(Phone o) {
+        return Double.compare(this.price, o.price);
     }
 }
