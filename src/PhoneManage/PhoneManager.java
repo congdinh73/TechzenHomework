@@ -4,9 +4,12 @@ import PhoneManage.model.NewPhone;
 import PhoneManage.model.OldPhone;
 import PhoneManage.model.Phone;
 import PhoneManage.utils.CheckInput;
+import PhoneManage.utils.PhoneComparators;
 import PhoneManage.utils.SortByFor;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Scanner;
 
 public class PhoneManager {
@@ -179,8 +182,8 @@ public class PhoneManager {
                     case 1:
                         System.out.println("Sorting by price ascending");
                         sortByPrice(true);
+                        System.out.println("---Listing phones after sorting---");
                         for (int i = 0; i < phones.size(); i++) {
-                            System.out.println("---Listing phones after sorting---");
                             System.out.println("Information of Phone " + (i + 1) + ":");
                             phones.get(i).output();
                         }
@@ -188,8 +191,8 @@ public class PhoneManager {
                     case 2:
                         System.out.println("Sorting by price descending");
                         sortByPrice(false);
+                        System.out.println("---Listing phones after sorting---");
                         for (int i = 0; i < phones.size(); i++) {
-                            System.out.println("---Listing phones after sorting---");
                             System.out.println("Information of Phone " + (i + 1) + ":");
                             phones.get(i).output();
                         }
@@ -248,7 +251,11 @@ public class PhoneManager {
             System.out.println("No phones available to sort.");
             return;
         }
-        SortByFor.sortByFor(phones, ascending);
+        if (ascending) {
+            Collections.sort(phones, PhoneComparators.BY_PRICE_ASCENDING);
+        } else {
+            Collections.sort(phones, PhoneComparators.BY_PRICE_DESCENDING);
+        }
     }
 
     private static void findPhoneByPrice(double price) {
