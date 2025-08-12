@@ -31,9 +31,14 @@ public class PhoneManager {
                 System.out.println("8. Discount for older Phones");
                 System.out.println("9. Exit");
                 System.out.print("Enter your choice: ");
-                choice = Integer.parseInt(scanner.nextLine());
+                try {
+                    choice = Integer.parseInt(scanner.nextLine());
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid choice! Please enter a valid number.");
+                    e.printStackTrace();
+                    continue;
+                }
                 String id;
-
                 switch (choice) {
                     case 1:
                         menuDisplayPhone();
@@ -95,11 +100,21 @@ public class PhoneManager {
                 System.out.println("3. Display new phones");
                 System.out.println("4. Back to main menu");
                 System.out.print("Enter your choice: ");
-                choice = Integer.parseInt(scanner.nextLine());
+                try {
+                    choice = Integer.parseInt(scanner.nextLine());
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid choice! Please enter a valid number.");
+                    e.printStackTrace();
+                    continue;
+                }
 
                 switch (choice) {
                     case 1:
                         System.out.println("Displaying all Phones");
+                        if (phones.isEmpty()) {
+                            System.out.println("No phones available.");
+                            return;
+                        }
                         for (int i = 0; i < phones.size(); i++) {
                             System.out.println("Information of Phone " + (i + 1) + ":");
                             phones.get(i).output();
@@ -107,6 +122,10 @@ public class PhoneManager {
                         break;
                     case 2:
                         System.out.println("Displaying old phones");
+                        if (phones.isEmpty()) {
+                            System.out.println("No old phones available.");
+                            return;
+                        }
                         for (Phone oldPhone : phones) {
                             if (oldPhone instanceof OldPhone) {
                                 System.out.println("Information of old Phone " + count++ + ":");
@@ -116,6 +135,10 @@ public class PhoneManager {
                         break;
                     case 3:
                         System.out.println("Displaying new phones");
+                        if (phones.isEmpty()) {
+                            System.out.println("No new phones available.");
+                            return;
+                        }
                         for (Phone newPhone : phones) {
                             if (newPhone instanceof NewPhone) {
                                 System.out.println("Information of new Phone " + count++ + ":");
@@ -141,7 +164,13 @@ public class PhoneManager {
                 System.out.println("2. Add old Phone");
                 System.out.println("3. Back to main menu");
                 System.out.print("Enter your choice: ");
-                choice = Integer.parseInt(scanner.nextLine());
+                try {
+                    choice = Integer.parseInt(scanner.nextLine());
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid choice! Please enter a valid number.");
+                    e.printStackTrace();
+                    continue;
+                }
 
                 switch (choice) {
                     case 1:
@@ -176,7 +205,13 @@ public class PhoneManager {
                 System.out.println("2. Sort by price descending");
                 System.out.println("3. Back to main menu");
                 System.out.print("Enter your choice: ");
-                choice = Integer.parseInt(scanner.nextLine());
+                try {
+                    choice = Integer.parseInt(scanner.nextLine());
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid choice! Please enter a valid number.");
+                    e.printStackTrace();
+                    continue;
+                }
 
                 switch (choice) {
                     case 1:
@@ -216,7 +251,13 @@ public class PhoneManager {
                 System.out.println("3. Search by Phone brand");
                 System.out.println("4. Back to main menu");
                 System.out.print("Enter your choice: ");
-                choice = Integer.parseInt(scanner.nextLine());
+                try {
+                    choice = Integer.parseInt(scanner.nextLine());
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid choice! Please enter a valid number.");
+                    e.printStackTrace();
+                    continue;
+                }
 
                 switch (choice) {
                     case 1:
@@ -312,17 +353,23 @@ public class PhoneManager {
     }
 
     private static void updatePhoneInformation(String id) {
-        Phone phone = findById(id);
-        if (phone == null) {
-            System.out.println("No phone found with the ID: " + id);
-            return;
-        }
+        try {
+            Phone phone = findById(id);
+            if (phone == null) {
+                System.out.println("No phone found with the ID: " + id);
+                return;
+            }
 
-        System.out.println("Current information of the Phone:");
-        phone.output();
-        System.out.println("Enter new information for the Phone:");
-        phone.input();
-        System.out.println("Phone information updated successfully!");
+            System.out.println("Current information of the Phone:");
+            phone.output();
+            System.out.println("Enter new information for the Phone:");
+            phone.input();
+            System.out.println("Phone information updated successfully!");
+        }  catch (Exception e) {
+            System.out.println("Error occurred while updating phone information: " + e.getMessage());
+            System.out.println("Please try again.");
+            updatePhoneInformation(id);
+        }
     }
 
     private static void deletePhone(String id) {
@@ -343,11 +390,16 @@ public class PhoneManager {
     }
 
     private static double totalAmountOfPhones() {
-        double total = 0;
-        for (Phone phone : phones) {
-            total += phone.totalPrice();
+        if (phones.isEmpty()) {
+            System.out.println("No phones available.");
+            return 0;
+        } else {
+            double total = 0;
+            for (Phone phone : phones) {
+                total += phone.totalPrice();
+            }
+            return total;
         }
-        return total;
     }
 
     private static void discountForOldPhones() {

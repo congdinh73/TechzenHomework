@@ -21,19 +21,24 @@ public class NewPhone extends Phone {
 
     @Override
     public void input() {
-        this.id = IdGenerator.generateNewPhoneId();
-        System.out.print("Enter new phone name: ");
-        this.phoneName = CheckInput.readString();
-        System.out.print("Enter price: ");
-        this.price = CheckInput.readPositiveInteger();
-        System.out.print("Enter time of maintenance: ");
-        this.timeMaintenance = CheckInput.readString();
-        System.out.print("Enter OS: ");
-        this.OS = CheckInput.readString();
-        System.out.print("Enter brand: ");
-        this.brand = CheckInput.readString();
-        System.out.print("Enter quantity: ");
-        this.quantity = CheckInput.readPositiveInteger();
+        try {
+            this.id = IdGenerator.generateNewPhoneId();
+            System.out.print("Enter new phone name: ");
+            this.phoneName = CheckInput.readString();
+            System.out.print("Enter price: ");
+            this.price = CheckInput.readPositiveInteger();
+            System.out.print("Enter time of maintenance: ");
+            this.timeMaintenance = CheckInput.readString();
+            System.out.print("Enter OS: ");
+            this.OS = CheckInput.readString();
+            System.out.print("Enter brand: ");
+            this.brand = CheckInput.readString();
+            System.out.print("Enter quantity: ");
+            this.quantity = CheckInput.readPositiveInteger();
+        } catch (Exception e) {
+            System.out.println("Error occurred while entering phone information: " + e.getMessage());
+            input();
+        }
     }
 
     @Override

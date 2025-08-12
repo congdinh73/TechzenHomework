@@ -8,11 +8,16 @@ public class CheckInput {
     public static String readString() {
         String input;
         while (true) {
-            input = scanner.nextLine();
-            if (!input.isEmpty()) {
-                return input;
-            } else {
-                System.out.println("Input cannot be empty. Please try again.");
+            try {
+                input = scanner.nextLine();
+               if (!input.isBlank()) {
+                   return input;
+               } else {
+                   System.out.println("Input cannot be empty. Please try again.");
+               }
+            } catch (Exception e) {
+                System.out.println("Invalid input. Please try again.");
+                scanner.nextLine();
             }
         }
     }
@@ -20,17 +25,18 @@ public class CheckInput {
     public static int readPositiveInteger() {
         int number;
         while (true) {
-            if (scanner.hasNextInt()) {
+            try {
+                System.out.println("Please enter a positive integer: ");
                 number = scanner.nextInt();
                 if (number > 0) {
                     scanner.nextLine();
                     return number;
                 } else {
-                    System.out.println("Please enter a positive integer.");
+                    System.out.println("Please enter a positive integer. Please try again.");
                 }
-            } else {
-                System.out.println("Invalid input. Please enter a positive integer.");
-                scanner.next();
+            } catch (Exception e) {
+                System.out.println("Invalid input. Please try again.");
+                scanner.nextLine();
             }
         }
     }
