@@ -25,18 +25,17 @@ public class CheckInput {
     public static int readPositiveInteger() {
         int number;
         while (true) {
+            System.out.print("Please enter a positive integer: ");
+            String input = scanner.nextLine();
             try {
-                System.out.println("Please enter a positive integer: ");
-                number = scanner.nextInt();
+                number = Integer.parseInt(input);
                 if (number > 0) {
-                    scanner.nextLine();
                     return number;
                 } else {
-                    System.out.println("Please enter a positive integer. Please try again.");
+                    System.out.println("Input must be a positive integer greater than 0. Please try again.");
                 }
-            } catch (Exception e) {
-                System.out.println("Invalid input. Please try again.");
-                scanner.nextLine();
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid positive integer.");
             }
         }
     }
