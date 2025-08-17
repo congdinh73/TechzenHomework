@@ -3,6 +3,7 @@ package PhoneManage;
 import PhoneManage.model.NewPhone;
 import PhoneManage.model.OldPhone;
 import PhoneManage.model.Phone;
+import PhoneManage.utils.CSVUtil;
 import PhoneManage.utils.CheckInput;
 import PhoneManage.utils.PhoneComparators;
 import PhoneManage.utils.SortByFor;
@@ -16,7 +17,19 @@ public class PhoneManager {
     static Scanner scanner = new Scanner(System.in);
     static ArrayList<Phone> phones = new ArrayList<>();
 
+
+    private static void loadFromCSV() {
+        phones.clear();
+        phones.addAll(CSVUtil.readFromCSV());
+        System.out.println("Loaded " + phones.size() + " phones from CSV file.");
+    }
+
+    private static void saveToCSV() {
+        CSVUtil.writeToCSV(phones);
+    }
+
     public static void showMenu() {
+        loadFromCSV();
         int choice;
         do {
             while (true) {
@@ -52,6 +65,7 @@ public class PhoneManager {
                         Phone phone = findById(id);
                         if (phone != null) {
                             updatePhoneInformation(id);
+                            saveToCSV();
                         } else {
                             System.out.println("No phone found with the ID: " + id + ". Please try again.");
                         }
@@ -62,6 +76,7 @@ public class PhoneManager {
                         Phone phoneToDelete = findById(id);
                         if (phoneToDelete != null) {
                             deletePhone(id);
+                            saveToCSV();
                         } else {
                             System.out.println("No phone found with the ID: " + id + ". Please try again.");
                         }
@@ -77,8 +92,10 @@ public class PhoneManager {
                         break;
                     case 8:
                         discountForOldPhones();
+                        saveToCSV();
                         break;
                     case 9:
+                        saveToCSV();
                         return;
 
                     default:
@@ -179,6 +196,7 @@ public class PhoneManager {
                         newPhone.input();
                         phones.add(newPhone);
                         System.out.println("New Phone added successfully!");
+                        saveToCSV();
                         break;
                     case 2:
                         System.out.println("Adding old Phone");
@@ -186,6 +204,7 @@ public class PhoneManager {
                         oldPhone.input();
                         phones.add(oldPhone);
                         System.out.println("Old Phone added successfully!");
+                        saveToCSV();
                         break;
                     case 3:
                         return;
