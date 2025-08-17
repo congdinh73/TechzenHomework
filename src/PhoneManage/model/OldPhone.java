@@ -13,7 +13,16 @@ public class OldPhone extends Phone implements Promotion {
     private double batteryLife;
 
 
+
     public OldPhone() {
+    }
+
+    public double getBatteryLife() {
+        return batteryLife;
+    }
+
+    public void setBatteryLife(double batteryLife) {
+        this.batteryLife = batteryLife;
     }
 
     @Override

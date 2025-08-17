@@ -14,6 +14,14 @@ public class NewPhone extends Phone {
     public NewPhone() {
     }
 
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
     @Override
     public double totalPrice() {
         return price * quantity;
